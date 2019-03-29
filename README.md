@@ -1,3 +1,3 @@
 # nikopechThesis
 
-- R_learn: directory for experimenting with R
+- simData: file containing getBioLocation function, used to get chromosome and coordinates of genomics data
