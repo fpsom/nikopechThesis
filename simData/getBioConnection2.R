@@ -1,11 +1,16 @@
-getBioConnection = function(BioLoc1, BioLoc2){
-  
-  output = data.frame(ID1 = character(), ID2 = character(), scale = numeric())
-  
+getBioConnection2 = function(BioLoc1, BioLoc2){
+
   range1 = sum(BioLoc1[,"end_position"] - BioLoc1[,"start_position"])
   range2 = sum(BioLoc2[,"end_position"] - BioLoc2[,"start_position"])
   
   if(range2 > range1){
+    
+    output = matrix(ncol = nrow(BioLoc2), nrow = nrow(BioLoc1))
+    colnames(output) = BioLoc2[,1]
+    row.names(output) = BioLoc1[,1]
+    
+    output = as.data.frame(output)
+    
     for (var in 1:nrow(BioLoc1)) {
       connectors = BioLoc2[which(BioLoc2$chromosome_name == BioLoc1[var, "chromosome_name"]), ]
       
@@ -33,9 +38,16 @@ getBioConnection = function(BioLoc1, BioLoc2){
       
       fraction = numerator / denominator
       
-      output = rbind(output, data.frame(ID1 = connectors[,1], ID2 = BioLoc1[var, 1], scale = fraction))
+      output[BioLoc1[var, 1], connectors[,1]] = fraction
     }
   } else {
+    
+    output = matrix(ncol = nrow(BioLoc1), nrow = nrow(BioLoc2))
+    colnames(output) = BioLoc1[,1]
+    row.names(output) = BioLoc2[,1]
+    
+    output = as.data.frame(output)
+    
     for (var in 1:nrow(BioLoc2)) {
       connectors = BioLoc1[which(BioLoc1$chromosome_name == BioLoc2[var, "chromosome_name"]), ]
       
@@ -63,7 +75,7 @@ getBioConnection = function(BioLoc1, BioLoc2){
       
       fraction = numerator / denominator
       
-      output = rbind(output, data.frame(ID1 = connectors[,1], ID2 = BioLoc2[var, 1], scale = fraction))
+      output[BioLoc2[var, 1], connectors[,1]] = fraction
     }
   }
   
