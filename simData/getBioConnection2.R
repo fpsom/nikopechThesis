@@ -38,7 +38,7 @@ getBioConnection2 = function(BioLoc1, BioLoc2){
       
       fraction = numerator / denominator
       
-      output[BioLoc1[var, 1], connectors[,1]] = fraction
+      output[as.character(BioLoc1[var, 1]), as.character(connectors[,1])] = fraction
     }
   } else {
     
@@ -75,7 +75,7 @@ getBioConnection2 = function(BioLoc1, BioLoc2){
       
       fraction = numerator / denominator
       
-      output[BioLoc2[var, 1], connectors[,1]] = fraction
+      output[as.character(BioLoc2[var, 1]), as.character(connectors[,1])] = fraction
     }
   }
   
