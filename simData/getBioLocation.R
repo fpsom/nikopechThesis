@@ -20,36 +20,79 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   library(stringi)
   library(stringr)
   
-  #------------------------------ Creating output data frame ------------------------------
+  #------------------------------ Creating chromo data frame ------------------------------
   
   Biovector = as.character(Biovector)
   
-  if(str_detect(Biovector[1], "cg")){
+  output = data.frame(ID = character(), chromosome_name = character(), start_position = numeric(), end_position = numeric())
+  
+  teV = Biovector[str_detect(Biovector, "cg")]
+  
+  if(length(teV) != 0){
     # Methylation data
     
-    output = Locations[Biovector, 1:2]
-    output = data.frame(sgID = Biovector, chromosome_name = as.integer(str_remove(output$chr, "chr")), 
-                                          start_position = output$pos, 
-                                          end_position = output$pos)
+    chromo = Locations[Biovector, 1:2]
+    chromo = data.frame(ID = teV, chromosome_name = as.integer(str_remove(chromo$chr, "chr")), 
+                                          start_position = chromo$pos, 
+                                          end_position = chromo$pos)
     
-    return(output)
+    output = rbind(output, chromo)
     
-  } else if(str_detect(Biovector[1], "NM")){
-    # RefSeq mRNA data
+  } 
+  
+  teV = Biovector[str_detect(Biovector, "NR")]
+  
+  if(length(teV) != 0){
+    # RefSeq ncRNA data
     
     biomart = ensembl = useMart(database, dataset=dataSet)
-    refseqids = Biovector
+    refseqids = teV
     
-    output = getBM(attributes=c("refseq_mrna","chromosome_name", "start_position", "end_position"), 
-                 filters="refseq_mrna",
+    chromo = getBM(attributes=c("refseq_ncrna","chromosome_name", "start_position", "end_position"), 
+                 filters="refseq_ncrna",
                  values=refseqids, 
                  mart=biomart)
     
-    return(output)
-  } else{
-    # Not known id found
+    colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
     
-    print("Please give a suitable vector")
-    return(Biovector)
+    output = rbind(output, chromo)
+  } 
+  
+  teV = Biovector[str_detect(Biovector, "NM")]
+  
+  if(length(teV) != 0){
+    # RefSeq mRNA data
+    
+    biomart = ensembl = useMart(database, dataset=dataSet)
+    refseqids = teV
+    
+    chromo = getBM(attributes=c("refseq_mrna","chromosome_name", "start_position", "end_position"), 
+                   filters="refseq_mrna",
+                   values=refseqids, 
+                   mart=biomart)
+    
+    colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
+    
+    output = rbind(output, chromo)
   }
+  
+  teV = Biovector[str_detect(Biovector, "NP")]
+  
+  if(length(teV) != 0){
+    # RefSeq peptide data
+    
+    biomart = ensembl = useMart(database, dataset=dataSet)
+    refseqids = teV
+    
+    chromo = getBM(attributes=c("refseq_peptide","chromosome_name", "start_position", "end_position"), 
+                   filters="refseq_peptide",
+                   values=refseqids, 
+                   mart=biomart)
+    
+    colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
+    
+    output = rbind(output, chromo)
+  }
+  
+  return(output)
 }
