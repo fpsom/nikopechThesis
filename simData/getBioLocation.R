@@ -19,12 +19,13 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   
   library(stringi)
   library(stringr)
+  library(data.table)
   
-  #------------------------------ Creating chromo data frame ------------------------------
+  #------------------------------ Creating chromo data table ------------------------------
   
   Biovector = as.character(Biovector)
   
-  output = data.frame(ID = character(), chromosome_name = character(), start_position = numeric(), end_position = numeric())
+  output = data.table(ID = character(), chromosome_name = character(), start_position = numeric(), end_position = numeric())
   
   teV = Biovector[str_detect(Biovector, "cg")]
   
@@ -32,8 +33,8 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     # Methylation data
     
     chromo = Locations[Biovector, 1:2]
-    chromo = data.frame(ID = teV, chromosome_name = as.integer(str_remove(chromo$chr, "chr")), 
-                                          start_position = chromo$pos, 
+    chromo = data.table(ID = teV, chromosome_name = as.integer(str_remove(chromo$chr, "chr")), 
+                                          start_position = (chromo$pos - 1), 
                                           end_position = chromo$pos)
     
     output = rbind(output, chromo)
@@ -55,6 +56,8 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
     
+    chromo = setDT(chromo)
+    
     output = rbind(output, chromo)
   } 
   
@@ -72,6 +75,8 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
                    mart=biomart)
     
     colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
+    
+    chromo = setDT(chromo)
     
     output = rbind(output, chromo)
   }
@@ -91,8 +96,16 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
     
+    chromo = setDT(chromo)
+    
     output = rbind(output, chromo)
   }
+  
+  temp = output$end_position - output$start_position
+  temp = cbind(output, data.table(range = temp))
+  temp = temp[order(temp$range, decreasing = TRUE), ]
+  output = temp[,1:4]
+  output = output[!duplicated(output$ID), ]
   
   return(output)
 }
