@@ -7,6 +7,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     return(Biovector)
   } else {
     library(biomaRt)
+    biomart = ensembl = useMart(database, dataset=dataSet)
   }
   
   if(!require("IlluminaHumanMethylation450kanno.ilmn12.hg19")){
@@ -32,7 +33,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   if(length(teV) != 0){
     # Methylation data
     
-    chromo = Locations[Biovector, 1:2]
+    chromo = Locations[teV, 1:2]
     chromo = data.table(ID = teV, chromosome_name = as.integer(str_remove(chromo$chr, "chr")), 
                                           start_position = (chromo$pos - 1), 
                                           end_position = chromo$pos)
@@ -46,13 +47,12 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   if(length(teV) != 0){
     # RefSeq ncRNA data
     
-    biomart = ensembl = useMart(database, dataset=dataSet)
     refseqids = teV
     
-    chromo = getBM(attributes=c("refseq_ncrna","chromosome_name", "start_position", "end_position"), 
-                 filters="refseq_ncrna",
-                 values=refseqids, 
-                 mart=biomart)
+    chromo = getBM(attributes = c("refseq_ncrna","chromosome_name", "start_position", "end_position"), 
+                      filters = "refseq_ncrna",
+                       values = refseqids, 
+                         mart = biomart)
     
     colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
     
@@ -66,13 +66,12 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   if(length(teV) != 0){
     # RefSeq mRNA data
     
-    biomart = ensembl = useMart(database, dataset=dataSet)
     refseqids = teV
     
-    chromo = getBM(attributes=c("refseq_mrna","chromosome_name", "start_position", "end_position"), 
-                   filters="refseq_mrna",
-                   values=refseqids, 
-                   mart=biomart)
+    chromo = getBM(attributes = c("refseq_mrna","chromosome_name", "start_position", "end_position"), 
+                      filters = "refseq_mrna",
+                       values = refseqids, 
+                         mart = biomart)
     
     colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
     
@@ -86,7 +85,6 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   if(length(teV) != 0){
     # RefSeq peptide data
     
-    biomart = ensembl = useMart(database, dataset=dataSet)
     refseqids = teV
     
     chromo = getBM(attributes=c("refseq_peptide","chromosome_name", "start_position", "end_position"), 
