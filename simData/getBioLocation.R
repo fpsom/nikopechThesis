@@ -33,6 +33,8 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   if(length(teV) != 0){
     # Methylation data
     
+    print("Methylation data")
+    
     chromo = Locations[teV, 1:2]
     chromo = data.table(ID = teV, chromosome_name = as.integer(str_remove(chromo$chr, "chr")), 
                                           start_position = (chromo$pos - 1), 
@@ -46,6 +48,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   
   if(length(teV) != 0){
     # RefSeq ncRNA data
+    print("RefSeq ncRNA data")
     
     refseqids = teV
     
@@ -65,6 +68,8 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   
   if(length(teV) != 0){
     # RefSeq mRNA data
+    
+    print("RefSeq mRNA data")
     
     refseqids = teV
     
