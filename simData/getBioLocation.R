@@ -7,7 +7,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     return(Biovector)
   } else {
     library(biomaRt)
-    biomart = ensembl = useMart(database, dataset=dataSet)
+    biomart = useMart(biomart="ENSEMBL_MART_ENSEMBL", host="grch37.ensembl.org", path="/biomart/martservice" ,dataset="hsapiens_gene_ensembl")
   }
   
   if(!require("IlluminaHumanMethylation450kanno.ilmn12.hg19")){
@@ -95,6 +95,27 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     chromo = getBM(attributes=c("refseq_peptide","chromosome_name", "start_position", "end_position"), 
                    filters="refseq_peptide",
                    values=refseqids, 
+                   mart=biomart)
+    
+    colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
+    
+    chromo = setDT(chromo)
+    
+    output = rbind(output, chromo)
+  }
+  
+  teV = Biovector[str_detect(Biovector, "ENSG")]
+  
+  if(length(teV) != 0){
+    # RefSeq peptide data
+    
+    print("ensembl gene data")
+    
+    ensembl_gene_ids = teV
+    
+    chromo = getBM(attributes=c("ensembl_gene_id","chromosome_name", "start_position", "end_position"), 
+                   filters="ensembl_gene_id",
+                   values=ensembl_gene_ids, 
                    mart=biomart)
     
     colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
