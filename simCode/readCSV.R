@@ -1,4 +1,6 @@
 readCSV = function(biodata){
+  library(data.table)
+  
   out = list()
   
   for(i in 1:length(biodata)){

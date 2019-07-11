@@ -22,6 +22,8 @@ bioCombine = function(biodata, colCmb = NULL){
   
   rm(tablet)
   
+  out = biodata
+  
   ###########################################################
   
   numMat = 1:length(biodata)
@@ -35,7 +37,7 @@ bioCombine = function(biodata, colCmb = NULL){
   } else {
     biodata = rbindlist(biodata, use.names = TRUE)
   }
-  
+
 
   rm(colCmb)
 
