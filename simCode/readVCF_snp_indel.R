@@ -26,13 +26,15 @@ readVCF_snp_indel = function(names){
   sameindel = indel[which(chrpos_indel %in% chrpos_snp), ]
   samesnp   = snp[which(chrpos_snp %in% chrpos_indel), ]
   
+  sameindel = sameindel[order(sameindel$chromosome_name, sameindel$start_position, sameindel$end_position), ]
+  samesnp   = samesnp[order(samesnp$chromosome_name, samesnp$start_position, samesnp$end_position), ]
+
   otherindel = indel[!(chrpos_indel %in% chrpos_snp), ]
   othersnp   = snp[!(chrpos_snp %in% chrpos_indel), ]
   
   out = cbind(samesnp, sameindel[ ,5])
-  t   = c("A", "G", "T", "C", "INDEL")
-  t   = paste(name, t, sep = "_")
-  colnames(out)[5:ncol(out)] = t
+  # t   = c("A", "G", "T", "C", "INDEL")
+  # colnames(out)[5:ncol(out)] = t
   
   nas = matrix(nrow = nrow(otherindel), ncol = 4)
   nas = as.data.table(nas)
@@ -49,6 +51,29 @@ readVCF_snp_indel = function(names){
   
   out = rbind(out, otherindel)
   out = rbind(out, othersnp)
+  
+  temp  = matrix(data = c("A", "G", "T", "C", "INDEL"), nrow = (5 * nrow(out)), ncol = 1)
+  temp  = as.data.table(temp)
+  temp2 = matrix(nrow = (5 * nrow(out)), ncol = 1)
+  temp2 = as.data.table(temp2)
+  temp  = cbind(temp, temp2)
+  rm(temp2)
+  
+  colnames(temp) = c("INFO", "second")
+  
+  temp$second = as.numeric(temp$second)
+  temp[which(temp$INFO == "A"), ]$second = out$A
+  temp[which(temp$INFO == "G"), ]$second = out$G
+  temp[which(temp$INFO == "T"), ]$second = out$T
+  temp[which(temp$INFO == "C"), ]$second = out$C
+  temp[which(temp$INFO == "INDEL"), ]$second = out$INDEL
+  
+  colnames(temp) = c("INFO", name)
+  
+  out = out[,1:4]
+  out = out[rep(seq_len(nrow(out)), each=5), ]
+  
+  out = cbind(out, temp)
   
   return(out)
 }
