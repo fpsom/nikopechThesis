@@ -26,7 +26,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   
   Biovector = as.character(Biovector)
   
-  output = data.table(ID = character(), chromosome_name = character(), start_position = numeric(), end_position = numeric())
+  output = data.table(ID = character(), chromosome_name = character(), start_position = numeric(), end_position = numeric(), INFO = character())
   
   teV = Biovector[str_detect(Biovector, "cg")]
   
@@ -39,6 +39,11 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     chromo = data.table(ID = teV, chromosome_name = as.integer(str_remove(chromo$chr, "chr")), 
                                           start_position = (chromo$pos - 1), 
                                           end_position = chromo$pos)
+    
+    temp = matrix(nrow = nrow(chromo), ncol = 1)
+    temp = as.data.table(temp)
+    colnames(temp) = c("INFO")
+    chromo = cbind(chromo, temp)
     
     output = rbind(output, chromo)
     
@@ -59,7 +64,12 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
     
-    chromo = setDT(chromo)
+    chromo = as.data.table(chromo)
+    
+    temp = matrix(nrow = nrow(chromo), ncol = 1)
+    temp = as.data.table(temp)
+    colnames(temp) = c("INFO")
+    chromo = cbind(chromo, temp)
     
     output = rbind(output, chromo)
   } 
@@ -80,7 +90,12 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
     
-    chromo = setDT(chromo)
+    chromo = as.data.table(chromo)
+    
+    temp = matrix(nrow = nrow(chromo), ncol = 1)
+    temp = as.data.table(temp)
+    colnames(temp) = c("INFO")
+    chromo = cbind(chromo, temp)
     
     output = rbind(output, chromo)
   }
@@ -99,7 +114,12 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
     
-    chromo = setDT(chromo)
+    chromo = as.data.table(chromo)
+    
+    temp = matrix(nrow = nrow(chromo), ncol = 1)
+    temp = as.data.table(temp)
+    colnames(temp) = c("INFO")
+    chromo = cbind(chromo, temp)
     
     output = rbind(output, chromo)
   }
@@ -120,7 +140,12 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     colnames(chromo) = c("ID", "chromosome_name", "start_position", "end_position")
     
-    chromo = setDT(chromo)
+    chromo = as.data.table(chromo)
+    
+    temp = matrix(nrow = nrow(chromo), ncol = 1)
+    temp = as.data.table(temp)
+    colnames(temp) = c("INFO")
+    chromo = cbind(chromo, temp)
     
     output = rbind(output, chromo)
   }
@@ -128,7 +153,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   temp = output$end_position - output$start_position
   temp = cbind(output, data.table(range = temp))
   temp = temp[order(temp$range, decreasing = TRUE), ]
-  output = temp[,1:4]
+  output = temp[,1:5]
   output = output[!duplicated(output$ID), ]
   
   return(output)

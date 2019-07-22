@@ -19,6 +19,5 @@ createScale = function(data){
     data[[i]] = temp
   }
   
-  
   return(data)
 }

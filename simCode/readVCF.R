@@ -48,5 +48,7 @@ readVCF = function(loc){
 
   out = out[!nas, ]
   
+  out$chromosome_name = str_remove(out$chromosome_name, "chr")
+  
   return(out)
 }
