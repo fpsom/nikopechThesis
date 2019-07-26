@@ -1,10 +1,27 @@
 bioCombine = function(biodata, colCmb = NULL){
   start = Sys.time()
   
+  source("check_CHROM_POS.R")
+  source("check_CHROM_POS_ALT.R")
+  source("chrProcessing.R")
+  source("createScale.R")
+  source("getAttConnection.R")
+  source("getBioLocation.R")
+  source("rangeProcessing.R")
+  source("readCSV.R")
+  source("readTXT.R")
+  source("readVCF.R")
+  source("readVCF_snp_indel.R")
+  source("readVCFindel.R")
+  source("readVCFsnp.R")
+  
   library(data.table)
   library(gtools)
   library(stringr)
   library(stringi)
+  library(biomaRt)
+  library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
+  library(vcfR)
   
   tablet = list()
   dataVCF = list()
@@ -37,7 +54,9 @@ bioCombine = function(biodata, colCmb = NULL){
   
   dataVCF = lapply(numMat, getAttConnection, dataVCF, colCmb, length(biodata))
   
-  # biodata = createScale(biodata)
+  ret = createScale(biodata, dataVCF)
+  biodata = ret[[1]]
+  dataVCF = ret[[2]]
 
   if(is.null(colCmb)){
     biodata = rbindlist(biodata, use.names = FALSE)
@@ -62,7 +81,7 @@ bioCombine = function(biodata, colCmb = NULL){
   
   biodata = rbind(biodata, dataVCF)
   
-  biodata = biodata[sample(nrow(biodata), 50000)]
+  biodata = biodata[sample(nrow(biodata), 150000)]
 
   ###########################################################
   print("starting integration process")

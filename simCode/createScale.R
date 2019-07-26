@@ -1,9 +1,12 @@
-createScale = function(data){
+createScale = function(data, dataVCF){
+  # dataVCF has by default maximum value = 100 
   matrixScales = c()
   
   for(temp in data){
     matrixScales = cbind(matrixScales, max(colSums(temp[,2:ncol(temp)])))
   }
+  
+  matrixScales = c(matrixScales, 100)
   
   maxScale = max(matrixScales)
   
@@ -19,5 +22,18 @@ createScale = function(data){
     data[[i]] = temp
   }
   
-  return(data)
+  i = 0
+  
+  for(temp in dataVCF){
+    i = i + 1
+
+    numericData = temp[,6:ncol(temp)]
+    numericData = numericData * (maxScale / 100)
+    temp = cbind(temp[,1:5], numericData)
+    dataVCF[[i]] = temp
+  }
+  
+  out = list(data, dataVCF)
+  
+  return(out)
 }
