@@ -1,4 +1,4 @@
-getAttConnection = function(matIndex, data, bioCmb, vcfmatrix = 0){
+getAttConnection = function(matIndex, data, bioCmb, vcfmatrix = 0, scale){
   library(data.table)
   library(stringr)
   
@@ -72,9 +72,9 @@ getAttConnection = function(matIndex, data, bioCmb, vcfmatrix = 0){
   
   if(vcfmatrix == 0){
     colScales = colSums(out[,2:ncol(out)])
-    maxScale = max(colScales)
+    # maxScale = max(colScales)
     numericData = out[,2:ncol(out)]
-    numericData = mapply("*", numericData, (maxScale / colScales))
+    numericData = mapply("*", numericData, (scale / colScales))
     out = cbind(out[,1], numericData)
   }
   

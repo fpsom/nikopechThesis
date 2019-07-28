@@ -1,4 +1,4 @@
-bioCombine = function(biodata, colCmb = NULL){
+bioCombine = function(biodata, colCmb = NULL, scale = 100){
   start = Sys.time()
   
   source("reading_data/check_CHROM_POS.R")
@@ -48,13 +48,13 @@ bioCombine = function(biodata, colCmb = NULL){
   
   numMat = 1:length(biodata)
 
-  biodata = lapply(numMat, getAttConnection, biodata, colCmb)
+  biodata = lapply(numMat, getAttConnection, biodata, colCmb, 0, scale)
   
   numMat = 1:length(dataVCF) + length(biodata)
   
   dataVCF = lapply(numMat, getAttConnection, dataVCF, colCmb, length(biodata))
   
-  ret = createScale(biodata, dataVCF)
+  ret = createScale(biodata, dataVCF, scale)
   biodata = ret[[1]]
   dataVCF = ret[[2]]
 
@@ -81,7 +81,11 @@ bioCombine = function(biodata, colCmb = NULL){
   
   biodata = rbind(biodata, dataVCF)
   
+  rm(bioLocation)
+  
   biodata = biodata[sample(nrow(biodata), 150000)]
+  
+  write.table(biodata, file = "biodata.csv",row.names=FALSE, sep=",")
 
   ###########################################################
   print("starting integration process")
