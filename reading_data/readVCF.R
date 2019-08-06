@@ -5,19 +5,19 @@ readVCF = function(loc){
   
   out = matrix(nrow = 0, ncol = 5)
   out = as.data.table(out)
-  colnames(out) = c("ID", "chromosome_name", "start_position", "end_position", "INFO")
+  colnames(out) = c("ID", "chromosome_name", "start_position", "end_position", "VarAnnotation")
   
   for(i in seq(1, length(loc), 2)){
     temp = readVCF_snp_indel(loc[i:(i + 1)])
     
-    index_out = paste(out$ID, out$chromosome_name, out$start_position, out$end_position, out$INFO, sep = "")
-    index_temp = paste(temp$ID, temp$chromosome_name, temp$start_position, temp$end_position, temp$INFO, sep = "")
+    index_out = paste(out$ID, out$chromosome_name, out$start_position, out$end_position, out$VarAnnotation, sep = "")
+    index_temp = paste(temp$ID, temp$chromosome_name, temp$start_position, temp$end_position, temp$VarAnnotation, sep = "")
     
     sameOut = out[which(index_out %in% index_temp), ]
     sameTemp = temp[which(index_temp %in% index_out), ]
     
-    sameOut = sameOut[order(sameOut$chromosome_name, sameOut$start_position, sameOut$end_position, sameOut$INFO), ]
-    sameTemp = sameTemp[order(sameTemp$chromosome_name, sameTemp$start_position, sameTemp$end_position, sameTemp$INFO), ]
+    sameOut = sameOut[order(sameOut$chromosome_name, sameOut$start_position, sameOut$end_position, sameOut$VarAnnotation), ]
+    sameTemp = sameTemp[order(sameTemp$chromosome_name, sameTemp$start_position, sameTemp$end_position, sameTemp$VarAnnotation), ]
     
     otherOut = out[!(index_out %in% index_temp), ]
     otherTemp = temp[!(index_temp %in% index_out), ]

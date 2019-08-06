@@ -59,16 +59,16 @@ readVCF_snp_indel = function(names){
   temp  = cbind(temp, temp2)
   rm(temp2)
   
-  colnames(temp) = c("INFO", "second")
+  colnames(temp) = c("VarAnnotation", "second")
   
   temp$second = as.numeric(temp$second)
-  temp[which(temp$INFO == "A"), ]$second = out$A
-  temp[which(temp$INFO == "G"), ]$second = out$G
-  temp[which(temp$INFO == "T"), ]$second = out$T
-  temp[which(temp$INFO == "C"), ]$second = out$C
-  temp[which(temp$INFO == "INDEL"), ]$second = out$INDEL
+  temp[which(temp$VarAnnotation == "A"), ]$second = out$A
+  temp[which(temp$VarAnnotation == "G"), ]$second = out$G
+  temp[which(temp$VarAnnotation == "T"), ]$second = out$T
+  temp[which(temp$VarAnnotation == "C"), ]$second = out$C
+  temp[which(temp$VarAnnotation == "INDEL"), ]$second = out$INDEL
   
-  colnames(temp) = c("INFO", name)
+  colnames(temp) = c("VarAnnotation", name)
   
   out = out[,1:4]
   out = out[rep(seq_len(nrow(out)), each=5), ]

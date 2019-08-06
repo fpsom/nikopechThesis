@@ -1,5 +1,4 @@
 readTXT = function(biodata){
-  
   library(data.table)
   
   out = read.table(as.character(biodata[1]), colClasses = c("vector"))

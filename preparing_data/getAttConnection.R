@@ -71,7 +71,9 @@ getAttConnection = function(matIndex, data, bioCmb, vcfmatrix = 0, scale){
   }
   
   if(vcfmatrix == 0){
-    colScales = colSums(out[,2:ncol(out)])
+    # colScales = colSums(out[,2:ncol(out)])
+    colScales = sapply(out[,2:ncol(out)], max, na.rm = TRUE)
+    colScales = as.vector(colScales)
     # maxScale = max(colScales)
     numericData = out[,2:ncol(out)]
     numericData = mapply("*", numericData, (scale / colScales))

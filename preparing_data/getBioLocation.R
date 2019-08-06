@@ -26,14 +26,12 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   
   Biovector = as.character(Biovector)
   
-  output = data.table(ID = character(), chromosome_name = character(), start_position = numeric(), end_position = numeric(), INFO = character())
+  output = data.table(ID = character(), chromosome_name = character(), start_position = numeric(), end_position = numeric(), VarAnnotation = character())
   
   teV = Biovector[str_detect(Biovector, "cg")]
   
   if(length(teV) != 0){
     # Methylation data
-    
-    print("Methylation data")
     
     chromo = Locations[teV, 1:2]
     chromo = data.table(ID = teV, chromosome_name = as.integer(str_remove(chromo$chr, "chr")), 
@@ -42,7 +40,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     temp = matrix(nrow = nrow(chromo), ncol = 1)
     temp = as.data.table(temp)
-    colnames(temp) = c("INFO")
+    colnames(temp) = c("VarAnnotation")
     chromo = cbind(chromo, temp)
     
     output = rbind(output, chromo)
@@ -53,7 +51,6 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   
   if(length(teV) != 0){
     # RefSeq ncRNA data
-    print("RefSeq ncRNA data")
     
     refseqids = teV
     
@@ -68,7 +65,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     temp = matrix(nrow = nrow(chromo), ncol = 1)
     temp = as.data.table(temp)
-    colnames(temp) = c("INFO")
+    colnames(temp) = c("VarAnnotation")
     chromo = cbind(chromo, temp)
     
     output = rbind(output, chromo)
@@ -78,8 +75,6 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   
   if(length(teV) != 0){
     # RefSeq mRNA data
-    
-    print("RefSeq mRNA data")
     
     refseqids = teV
     
@@ -94,7 +89,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     temp = matrix(nrow = nrow(chromo), ncol = 1)
     temp = as.data.table(temp)
-    colnames(temp) = c("INFO")
+    colnames(temp) = c("VarAnnotation")
     chromo = cbind(chromo, temp)
     
     output = rbind(output, chromo)
@@ -118,7 +113,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     temp = matrix(nrow = nrow(chromo), ncol = 1)
     temp = as.data.table(temp)
-    colnames(temp) = c("INFO")
+    colnames(temp) = c("VarAnnotation")
     chromo = cbind(chromo, temp)
     
     output = rbind(output, chromo)
@@ -128,8 +123,6 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
   
   if(length(teV) != 0){
     # RefSeq peptide data
-    
-    print("ensembl gene data")
     
     ensembl_gene_ids = teV
     
@@ -144,7 +137,7 @@ getBioLocation = function(Biovector, database = "ensembl", dataSet="hsapiens_gen
     
     temp = matrix(nrow = nrow(chromo), ncol = 1)
     temp = as.data.table(temp)
-    colnames(temp) = c("INFO")
+    colnames(temp) = c("VarAnnotation")
     chromo = cbind(chromo, temp)
     
     output = rbind(output, chromo)

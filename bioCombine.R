@@ -1,6 +1,10 @@
-bioCombine = function(biodata, colCmb = NULL, scale = 100){
+bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL){
+  #------------------------------ Start time of algorithm ------------------------------
   start = Sys.time()
   
+  #------------------------------ Source required functions and libraries ------------------------------
+  print("Loading functions and libraries")
+
   source("reading_data/check_CHROM_POS.R")
   source("reading_data/check_CHROM_POS_ALT.R")
   source("integrating_process/chrProcessing.R")
@@ -23,6 +27,9 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100){
   library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
   library(vcfR)
   
+  #------------------------------ Reading data ------------------------------
+  print("Reading data")
+
   tablet = list()
   dataVCF = list()
   
@@ -44,7 +51,9 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100){
   
   # out = biodata
   
-  ###########################################################
+  #------------------------------ Preparing data for integrating process ------------------------------
+
+  print("Column connection")
   
   numMat = 1:length(biodata)
 
@@ -54,6 +63,8 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100){
   
   dataVCF = lapply(numMat, getAttConnection, dataVCF, colCmb, length(biodata))
   
+  print("Creating scale")
+
   ret = createScale(biodata, dataVCF, scale)
   biodata = ret[[1]]
   dataVCF = ret[[2]]
@@ -67,6 +78,8 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100){
   }
 
   rm(colCmb)
+
+  print("Getting location data")
 
   bioLocation = getBioLocation(biodata$ID)
 
@@ -83,24 +96,37 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100){
   
   rm(bioLocation)
   
-  biodata = biodata[sample(nrow(biodata), 150000)]
+  # biodata = biodata[sample(nrow(biodata), 150000)]
+
+  print("Choosing desired chromosomes")
+
+  if(is.null(chromosomes)){
+    chr = as.factor(biodata$chromosome_name)
+    chr = levels(chr)
+  } else {
+    chr = as.factor(chromosomes)
+    chr = levels(chr)
+  }
+
+  biodata = biodata[which(biodata$chromosome_name %in% chr), ]
   
-  write.table(biodata, file = "biodata.csv",row.names=FALSE, sep=",")
+  write.table(biodata, file = "biodata_pre_integration.csv", row.names=FALSE, sep=";")
 
-  ###########################################################
-  print("starting integration process")
+  #------------------------------ Start integrating process ------------------------------
 
-  chr = as.factor(biodata$chromosome_name)
-  chr = levels(chr)
+  print("Start of Integration process")
 
   out = lapply(chr, chrProcessing, biodata)
   out = rbindlist(out)
   out = as.data.table(out)
+  write.table(out, file = "biodata_post_integration.csv", row.names=FALSE, sep=";")
+
+  print("End of Integration process")
+
+  #------------------------------ End of algorithm ------------------------------
 
   end = Sys.time()
   print(end - start)
-  
-  ###########################################################
   
   return(out)
 }

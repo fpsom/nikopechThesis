@@ -14,7 +14,7 @@ createScale = function(data, dataVCF, scale){
   
   for(temp in data){
     i = i + 1
-    tempScale = max(colSums(temp[,2:ncol(temp)]))
+    tempScale = max(temp[,2:ncol(temp)], na.rm = TRUE)
     
     numericData = temp[,2:ncol(temp)]
     numericData = numericData * (scale / tempScale)

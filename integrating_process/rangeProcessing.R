@@ -7,7 +7,7 @@ rangeProcessing = function(biorange, exout){
                    chromosome_name = character(nrow(connectors)), 
                    start_position = numeric(nrow(connectors)), 
                    end_position = numeric(nrow(connectors)),
-                   INFO = character(nrow(connectors)))
+                   VarAnnotation = character(nrow(connectors)))
   
   if(nrow(connectors) != 0){
     
@@ -15,7 +15,7 @@ rangeProcessing = function(biorange, exout){
     out$chromosome_name = connectors$chromosome_name
     out$start_position = biorange[1]
     out$end_position = biorange[2]
-    out$INFO = connectors$INFO
+    out$VarAnnotation = connectors$VarAnnotation
     
     scl = (biorange[2] - biorange[1]) / (connectors$end_position - connectors$start_position)
     
