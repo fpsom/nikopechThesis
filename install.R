@@ -1,3 +1,6 @@
+install.packages("installr")
+library(installr)
+updateR()
 
 install.packages("BiocManager")
 
