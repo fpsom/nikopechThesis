@@ -36,6 +36,12 @@ source("bioCombine.R")
 ```
 bioCombine(biodata, colCmb = NULL, scale = 100, chromosomes = NULL)
 ```
+| Property    | Type            | Default | Description |
+|:------------|:----------------|:--------|:------------|
+| biodata     | list of strings | required | List of all file paths that are going to be given as input to the algorithm (for the format of this variable, please see bellow). |
+| colCmb      | string          | NULL     | Path of the file that is going to be used for column integration. If NULL, column integration is not required (for the format of this variable, please see bellow). |                                                                                                                             
+| scale       | Numeric         | 100      | Number used for scaling of inputs. |                                                                                              
+| chromosomes | string          | NULL     | Chromosome that is going to be used (given as a number, not 'chr1').|  
 
 ## Usage
 
