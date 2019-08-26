@@ -1,4 +1,4 @@
-FROM rocker/binder:latest
+FROM rocker/binder:3.6.0
 
 ## Declares build arguments
 ARG NB_USER rstudio
