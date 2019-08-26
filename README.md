@@ -1,7 +1,5 @@
 # nikopechThesis/Genomic Data Integration
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fpsom/nikopechThesis.git/master?urlpath=rstudio)
-
 ## Getting Started
 
 Before running the algorithm, the following steps need to be followed
