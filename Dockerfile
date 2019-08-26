@@ -1,9 +1,8 @@
-## Use a tag instead of "latest" for reproducibility
 FROM rocker/binder:latest
 
 ## Declares build arguments
-ARG NB_USER
-ARG NB_UID
+ARG NB_USER rstudio
+ARG NB_UID 1000
 
 ## Copies your repo files into the Docker Container
 USER root
