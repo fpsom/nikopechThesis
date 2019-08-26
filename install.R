@@ -1,5 +1,5 @@
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
+
+install.packages("BiocManager")
 library(BiocManager)
 BiocManager::install()
 BiocManager::install("biomaRt")
