@@ -10,14 +10,14 @@ library(magick)
 ## Inputs
 
 # file to read
-file_name = "biodata_pre_integration_1.csv"
+file_name = "biodata_pre_integration_chr17.csv"
 pre_data = read.csv(file_name, sep = ";")
 
 image_folder_name = "images"
 image_folder_name = paste(image_folder_name, "/", sep = "")
 
 # chromosomes to visualize
-chr_to_visual = "chr14"
+chr_to_visual = "chr17"
 
 # patient to visualize
 patient = colnames(pre_data)[6:length(pre_data)]

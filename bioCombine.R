@@ -110,7 +110,7 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL){
 
   biodata = biodata[which(biodata$chromosome_name %in% chr), ]
   
-  write.table(biodata, file = "biodata_pre_integration.csv", row.names=FALSE, sep=";")
+  write.table(biodata, file = paste("biodata_pre_integration_", chromosomes, ".csv", sep = ""), row.names=FALSE, sep=";")
 
   #------------------------------ Start integrating process ------------------------------
 
@@ -119,7 +119,7 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL){
   out = lapply(chr, chrProcessing, biodata)
   out = rbindlist(out)
   out = as.data.table(out)
-  write.table(out, file = "biodata_post_integration.csv", row.names=FALSE, sep=";")
+  write.table(out, file = paste("biodata_post_integration_", chromosomes, ".csv", sep = ""), row.names=FALSE, sep=";")
 
   print("End of Integration process")
 
