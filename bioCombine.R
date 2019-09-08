@@ -1,4 +1,4 @@
-bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL){
+bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL, txdb = NULL){
   #------------------------------ Start time of algorithm ------------------------------
   start = Sys.time()
   
@@ -7,24 +7,27 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL){
 
   source("reading_data/check_CHROM_POS.R")
   source("reading_data/check_CHROM_POS_ALT.R")
-  source("integrating_process/chrProcessing.R")
-  source("preparing_data/createScale.R")
-  source("preparing_data/getAttConnection.R")
-  source("preparing_data/getBioLocation.R")
-  source("integrating_process/rangeProcessing.R")
   source("reading_data/readCSV.R")
   source("reading_data/readTXT.R")
   source("reading_data/readVCF.R")
   source("reading_data/readVCF_snp_indel.R")
   source("reading_data/readVCFindel.R")
   source("reading_data/readVCFsnp.R")
+  source("preparing_data/createScale.R")
+  source("preparing_data/getAttConnection.R")
+  source("preparing_data/getBioLocation.R")
+  source("preparing_data/getGenomicFeatures.R")
+  source("integrating_process/chrProcessing.R")
+  source("integrating_process/rangeProcessing.R")
   
+  library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
+  library(GenomicFeatures)
+  library(systemPipeR)
   library(data.table)
-  library(gtools)
   library(stringr)
   library(stringi)
   library(biomaRt)
-  library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
+  library(gtools)
   library(vcfR)
   
   #------------------------------ Reading data ------------------------------
@@ -95,8 +98,6 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL){
   biodata = rbind(biodata, dataVCF)
   
   rm(bioLocation)
-  
-  # biodata = biodata[sample(nrow(biodata), 150000)]
 
   print("Choosing desired chromosomes")
 
@@ -110,7 +111,31 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL){
 
   biodata = biodata[which(biodata$chromosome_name %in% chr), ]
   
-  write.table(biodata, file = paste("biodata_pre_integration_", chromosomes, ".csv", sep = ""), row.names=FALSE, sep=";")
+  # biodata = biodata[sample(1:nrow(biodata), size = 10), ]
+  print(nrow(biodata))
+  print("Getting genomic features")
+  
+  gr = GRanges(seqnames = Rle(as.character(biodata$chromosome_name)), 
+               ranges = IRanges(start = as.numeric(biodata$start_position), 
+                                end = as.numeric(biodata$end_position)))
+  feat = genFeatures(txdb, reduce_ranges = FALSE)
+  feat = unlist(feat)
+  feat = feat[!(unlist(feat$featuretype) == "intergenic"), ]
+  
+  overlaps = findOverlaps(feat, gr)
+  
+  indexes = c(1:nrow(biodata))
+  
+  genomic_features = lapply(indexes, getGenomicFeatures, overlaps, feat)
+  genomic_features = rbindlist(genomic_features)
+  
+  temp = cbind(biodata[ ,c(1:5)], genomic_features)
+  biodata = cbind(temp, biodata[ ,6:ncol(biodata)])
+  
+  rm(gr, feat, overlaps, indexes, genomic_features, temp)
+  
+  
+  write.table(biodata, file = paste("biodata_pre_integration_", paste(chromosomes, collapse = "."), ".csv", sep = ""), row.names=FALSE, sep=";")
 
   #------------------------------ Start integrating process ------------------------------
 
@@ -127,6 +152,6 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL){
 
   end = Sys.time()
   print(end - start)
-  
+
   return(out)
 }

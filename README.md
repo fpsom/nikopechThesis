@@ -40,10 +40,12 @@ bioCombine(biodata, colCmb = NULL, scale = 100, chromosomes = NULL)
 ```
 | Property    | Type            | Default | Description |
 |:------------|:----------------|:--------|:------------|
-| biodata     | list of strings | required | List of all file paths that are going to be given as input to the algorithm (for the format of this variable, please see bellow). |
-| colCmb      | string          | NULL     | Path of the file that is going to be used for column integration. If NULL, column integration is not required (for the format of this variable, please see bellow). |                                                                                                                             
-| scale       | Numeric         | 100      | Number used for scaling of inputs. |                                                                                              
-| chromosomes | string          | NULL     | Chromosome that is going to be used (given as a number, not 'chr1').|  
+| ```biodata``` | list of strings | required | List of all file paths that are going to be given as input to the algorithm (for the format of this variable, please see bellow). |
+| ```colCmb``` | string          | NULL     | Path of the file that is going to be used for column integration. If NULL, column integration is not required (for the format of this variable, please see bellow). |                                                                                                                             
+| ```scale``` | Numeric         | 100      | Number used for scaling of inputs. |                                                                                              
+| ```chromosomes``` | string          | NULL     | Chromosome that is going to be used (given as a number, not 'chr1').|  
+
+- ```biodata```: It is a list of strings that shows all paths to file-inputs. Supposing that each CSV file contains all columns of an array and each VCF/TXT file contains only one column of an array, then the following format in applied: Fist argument should be path to CSV files, second argument should be a list that contains paths to TXT files and third argument should be a list with paths to VCF files (```list(c("/path/to/csv/files"), list(c("/first/path/to/txt/files", "/second/path/to/txt/files")), list(c("/first/path/to/vcf/files", "/second/path/to/vcf/files"))))```
 
 ## Usage
 
