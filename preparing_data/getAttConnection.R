@@ -1,4 +1,4 @@
-getAttConnection = function(matIndex, data, bioCmb, vcfmatrix = 0, scale){
+getAttConnection = function(matIndex, data, bioCmb, vcfmatrix = 0){
   library(data.table)
   library(stringr)
   
@@ -16,7 +16,7 @@ getAttConnection = function(matIndex, data, bioCmb, vcfmatrix = 0, scale){
       weights = bioCmb[i, "weights"]
       newNames = bioCmb[i, "newNames"]
       
-      columns = strsplit(as.character(columns), ", ")
+      columns = strsplit(as.character(columns), "; ")
       columns = unlist(columns)
       columns = str_trim(columns, side = "both")
       
@@ -27,13 +27,13 @@ getAttConnection = function(matIndex, data, bioCmb, vcfmatrix = 0, scale){
       }
       
       if(!is.na(weights)){
-        weights = strsplit(as.character(weights), ", ")
+        weights = strsplit(as.character(weights), "; ")
         weights = unlist(weights)
         weights = str_trim(weights, side = "both")
         weights = as.numeric(weights)
       }
       
-      newNames = strsplit(as.character(newNames), ", ")
+      newNames = strsplit(as.character(newNames), "; ")
       newNames = unlist(newNames)
       newNames = str_trim(newNames, side = "both")
       
@@ -70,15 +70,15 @@ getAttConnection = function(matIndex, data, bioCmb, vcfmatrix = 0, scale){
     out = data
   }
   
-  if(vcfmatrix == 0){
-    # colScales = colSums(out[,2:ncol(out)])
-    colScales = sapply(out[,2:ncol(out)], max, na.rm = TRUE)
-    colScales = as.vector(colScales)
-    # maxScale = max(colScales)
-    numericData = out[,2:ncol(out)]
-    numericData = mapply("*", numericData, (scale / colScales))
-    out = cbind(out[,1], numericData)
-  }
+  # if(vcfmatrix == 0){
+  #   # colScales = colSums(out[,2:ncol(out)])
+  #   colScales = sapply(out[,2:ncol(out)], max, na.rm = TRUE)
+  #   colScales = as.vector(colScales)
+  #   # maxScale = max(colScales)
+  #   numericData = out[,2:ncol(out)]
+  #   numericData = mapply("*", numericData, (scale / colScales))
+  #   out = cbind(out[,1], numericData)
+  # }
   
   return(out)
 }

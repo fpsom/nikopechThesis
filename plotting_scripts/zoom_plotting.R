@@ -7,30 +7,30 @@ library(data.table)
 library(png)
 library(magick)
 
-## Inputs
+##################### Inputs ##################
 
 # file to read
-file_name = "biodata_pre_integration_17.csv"
+file_name = "biodata_pre_integration_14.csv"
 pre_data = read.csv(file_name, sep = ";")
 
-image_folder_name = "images"
+image_folder_name = "images_chr14_MOAP1"
 image_folder_name = paste(image_folder_name, "/", sep = "")
 
 # chromosomes to visualize
-chr_to_visual = "chr17"
+chr_to_visual = "chr14"
 
 # patient to visualize
 patient = colnames(pre_data)[8:length(pre_data)]
 # patient = which(colnames(pre_data) %in% patient)
 
 # specific region to zoom
-start = 7565097
-end = 7590863
+start = 93648541
+end = 93651273
 tickDistance = round((end - start) / 7)
 region = toGRanges(data.frame(chr_to_visual, start, end))
 # rm(start, end)
 
-## Reading data
+########################## Reading data ##########################
 
 meth_data = pre_data[which(str_detect(pre_data$ID, "cg")), ]
 meth_data$chromosome_name = paste("chr", meth_data$chromosome_name, sep = "")
@@ -76,7 +76,7 @@ var_data = as.data.frame(var_data)
 
 rm(temp)
 
-## Plotting
+######################## Plotting #########################
 
 plot.params = getDefaultPlotParams(plot.type = 1)
 plot.params$data1height = 200
@@ -105,7 +105,7 @@ for(i in patient){
   kpBars(kp, chr = gene_data$chromosome_name, 
          r0 = 0.25, r1 = 0.48, 
          x0 = gene_data$start_position, x1 = gene_data$end_position, 
-         y1 = (gene_data[ ,i] / max(gene_data[ ,i])), border = "slateblue4", cex = 1)
+         y1 = (gene_data[ ,i] / max(gene_data[ ,i])), border = "slateblue4", cex = 1, lwd = 3)
   kpAddLabels(kp, labels = "RNASeq", side = "left", r0 = 0.25, r1 = 0.48, srt = 90, label.margin = 0.03)
   
   kpDataBackground(kp, data.panel = 1, r0=0.5, r1=0.73)
@@ -114,7 +114,7 @@ for(i in patient){
              r0 = 0.5, r1 = 0.73,
              x0 = var_data$start_position,
              x1=var_data$start_position,
-             y0 = 0, y1=(var_data[ ,i] / 5))
+             y0 = 0, y1=(var_data[ ,i] / 5), lwd = 2)
   kpAddLabels(kp, labels = "FCR_WES", side = "left", r0 = 0.5, r1 = 0.73, srt = 90, label.margin = 0.03)
   
   kpDataBackground(kp, data.panel = 1, r0=0.75, r1=1)
@@ -124,12 +124,12 @@ for(i in patient){
   kpBars(kp, chr = gene_data$chromosome_name, 
          r0 = 0.75, r1 = 1, 
          x0 = gene_data$start_position, x1 = gene_data$end_position, 
-         y1 = (gene_data[ ,i] / max(gene_data[ ,i])), border = "slateblue4", cex = 1)
+         y1 = (gene_data[ ,i] / max(gene_data[ ,i])), border = "slateblue4", lwd = 3)
   kpSegments(kp, chr = var_data$chromosome_name,
              r0 = 0.75, r1 = 1,
              x0 = var_data$start_position,
              x1=var_data$start_position,
-             y0 = 0, y1=(var_data[ ,i] / 5))
+             y0 = 0, y1=(var_data[ ,i] / 5), lwd = 2)
   kpAddLabels(kp, labels = "Integrated table", side = "left", r0 = 0.75, r1 = 1, srt = 90, label.margin = 0.03)
   
   dev.off()
@@ -181,12 +181,12 @@ for(i in seq(1, length(patient), by = 2)){
          r0 = 0.25, r1 = 0.48,
          x0 = gene_data$start_position, x1 = gene_data$end_position,
          y0 = (Y0 + 0.5),
-         y1 = (Y1 + 0.5), border = col_to_apply, cex = 1)
+         y1 = (Y1 + 0.5), border = col_to_apply, lwd = 2)
   kpRect(kp, chr = gene_data$chromosome_name,
          r0 = 0.75, r1 = 1,
          x0 = gene_data$start_position, x1 = gene_data$end_position,
          y0 = (Y0 + 0.5),
-         y1 = (Y1 + 0.5), border = col_to_apply, cex = 1)
+         y1 = (Y1 + 0.5), border = col_to_apply, lwd = 2)
   kpAddLabels(kp, labels = "RNASeq", side = "left", r0 = 0.25, r1 = 0.48, srt = 90, label.margin = 0.03)
   
   kpDataBackground(kp, data.panel = 1, r0=0.5, r1=0.73)
@@ -203,7 +203,7 @@ for(i in seq(1, length(patient), by = 2)){
              x0 = var_data$start_position,
              x1=var_data$start_position,
              y0 = Y0 + 0.5, y1 = Y1 + 0.5,
-             col = col_to_apply)
+             col = col_to_apply, lwd = 2)
   kpAbline(kp, chr = gene_data$chromosome_name,
            h = 0.5, r0 = 0.5, r1 = 0.73)
   kpSegments(kp, chr = var_data$chromosome_name,
@@ -211,7 +211,7 @@ for(i in seq(1, length(patient), by = 2)){
              x0 = var_data$start_position,
              x1=var_data$start_position,
              y0 = Y0 + 0.5, y1 = Y1 + 0.5,
-             col = col_to_apply)
+             col = col_to_apply, lwd = 2)
   kpAddLabels(kp, labels = "FCR_WES", side = "left", r0 = 0.5, r1 = 0.73, srt = 90, label.margin = 0.03)
   kpAddLabels(kp, labels = "Integrated table", side = "left", r0 = 0.75, r1 = 1, srt = 90, label.margin = 0.03)
   dev.off()

@@ -1,4 +1,4 @@
-bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL, txdb = NULL){
+bioCombine = function(biodata, colCmb = NULL, scale = NULL, chromosomes = NULL, txdb){
   #------------------------------ Start time of algorithm ------------------------------
   start = Sys.time()
   
@@ -60,7 +60,7 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL, t
   
   numMat = 1:length(biodata)
 
-  biodata = lapply(numMat, getAttConnection, biodata, colCmb, 0, scale)
+  biodata = lapply(numMat, getAttConnection, biodata, colCmb, 0)
   
   numMat = 1:length(dataVCF) + length(biodata)
   
@@ -68,9 +68,12 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL, t
   
   print("Creating scale")
 
-  ret = createScale(biodata, dataVCF, scale)
-  biodata = ret[[1]]
-  dataVCF = ret[[2]]
+  if(!is.null(scale)){
+    ret = createScale(biodata, dataVCF, scale)
+    biodata = ret[[1]]
+    dataVCF = ret[[2]]
+    rm(ret)
+  }
 
   if(is.null(colCmb)){
     biodata = rbindlist(biodata, use.names = FALSE)
@@ -111,8 +114,6 @@ bioCombine = function(biodata, colCmb = NULL, scale = 100, chromosomes = NULL, t
 
   biodata = biodata[which(biodata$chromosome_name %in% chr), ]
   
-  # biodata = biodata[sample(1:nrow(biodata), size = 10), ]
-  print(nrow(biodata))
   print("Getting genomic features")
   
   gr = GRanges(seqnames = Rle(as.character(biodata$chromosome_name)), 
